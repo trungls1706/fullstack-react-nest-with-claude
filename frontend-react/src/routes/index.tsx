@@ -6,6 +6,7 @@ import { AdminLayout } from '@/layouts/AdminLayout';
 import { ProtectedRoute } from './ProtectedRoute';
 import { AdminRoute } from './AdminRoute';
 import { ROUTES } from './routes';
+import { AdminUserListPage, AdminUserFormPage } from '@/features/user';
 
 export const router = createBrowserRouter([
   {
@@ -37,6 +38,14 @@ export const router = createBrowserRouter([
   {
     path: '/admin',
     element: <AdminRoute />,
-    children: [{ element: <AdminLayout />, children: [] }],
+    children: [
+      {
+        element: <AdminLayout />,
+        children: [
+          { path: ROUTES.ADMIN_USERS, element: <AdminUserListPage /> },
+          { path: `${ROUTES.ADMIN_USERS}/:id`, element: <AdminUserFormPage /> },
+        ],
+      },
+    ],
   },
 ]);
