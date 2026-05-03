@@ -10,8 +10,8 @@ A full-featured e-commerce platform inspired by Amazon. This project demonstrate
 
 ## Structure
 ```
-├── frontend/    → @frontend-react-hoc_claude/CLAUDE.md
-├── backend/     → @backend-nest-hoc_claude/CLAUDE.md
+├── frontend/    → @frontend-react/CLAUDE.md
+├── backend/     → @backend-nest/CLAUDE.md
 └── 01-share-docs/        → Shared documentation
 ```
 
