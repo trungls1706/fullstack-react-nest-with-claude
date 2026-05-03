@@ -20,7 +20,8 @@
         "test:watch": "jest --watch",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./test/jest-e2e.json"
+        "test:e2e": "jest --config ./test/jest-e2e.json",
+        "seed": "ts-node --project tsconfig.seed.json src/database/seed.ts"
     },
     "dependencies": {
         "@nestjs/common": "11.1.17",
@@ -47,6 +48,7 @@
     "devDependencies": {
         "@eslint/eslintrc": "3.3.5",
         "@eslint/js": "10.0.1",
+        "@faker-js/faker": "^10.4.0",
         "@nestjs/cli": "11.0.16",
         "@nestjs/schematics": "11.0.9",
         "@nestjs/testing": "11.1.17",

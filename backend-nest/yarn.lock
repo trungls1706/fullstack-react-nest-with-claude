@@ -413,6 +413,11 @@
     "@eslint/core" "^1.1.1"
     "levn" "^0.4.1"
 
+"@faker-js/faker@^10.4.0":
+  "integrity" "sha512-sDBWI3yLy8EcDzgobvJTWq1MJYzAkQdpjXuPukga9wXonhpMRvd1Izuo2Qgwey2OiEoRIBr35RMU9HJRoOHzpw=="
+  "resolved" "https://registry.npmjs.org/@faker-js/faker/-/faker-10.4.0.tgz"
+  "version" "10.4.0"
+
 "@humanfs/core@^0.19.1":
   "integrity" "sha512-5DyQ4+1JEUzejeK1JGICcideyfUbGixgS9jNgex5nqkW+cY7WZhxBigmieN5Qnw9ZosSNVC9KQKyb+GUaGyKUA=="
   "resolved" "https://registry.npmjs.org/@humanfs/core/-/core-0.19.1.tgz"
