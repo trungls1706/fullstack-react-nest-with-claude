@@ -9,6 +9,7 @@ import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import { DatabaseModule } from './core/database/database.module';
 import { LoggerModule } from './core/logger/logger.module';
+import { AuthModule } from './features/auth/auth.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LoggerModule } from './core/logger/logger.module';
     EventEmitterModule.forRoot(),
     DatabaseModule,
     LoggerModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
