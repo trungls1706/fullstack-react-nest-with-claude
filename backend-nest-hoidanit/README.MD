@@ -15,7 +15,7 @@ This source code is provided **exclusively for enrolled students** in this cours
 - Account suspension on learning platforms.  
 - Legal action in serious cases.  
 
-📩 For inquiries, contact: **admin@hocclaude.vn**
+📩 For inquiries, contact: **admin@hoc_claude.vn**
 
 ---
 
@@ -27,11 +27,11 @@ Môi trường chạy dự án: Node.js v24
 ## Về tác giả
 Mọi thông tin về Tác giả Hỏi Dân IT, các bạn có thể tìm kiếm tại đây:
 
-Website chính thức: https://hocclaude.vn/
+Website chính thức: https://hoc_claude.vn/
 
-Youtube “Hỏi Dân IT” : https://www.youtube.com/@hocclaude
+Youtube “Hỏi Dân IT” : https://www.youtube.com/@hoc_claude
 
-Tiktok “Hỏi Dân IT” :  https://www.tiktok.com/@hocclaude
+Tiktok “Hỏi Dân IT” :  https://www.tiktok.com/@hoc_claude
 
 Fanpage “Hỏi Dân IT” : https://www.facebook.com/askITwithERIC/
 

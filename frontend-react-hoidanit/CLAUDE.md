@@ -1,4 +1,4 @@
-# Frontend: hocclaude-ecommerce
+# Frontend: hoc_claude-ecommerce
 
 ## Tech Stack
   - React 19 + Vite: fast dev server, modern React features

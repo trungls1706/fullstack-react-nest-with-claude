@@ -1,4 +1,4 @@
-# Project: hocclaude-ecommerce
+# Project: hoc_claude-ecommerce
 
 ## Overview
 A full-featured e-commerce platform inspired by Amazon. This project demonstrates building a complete online shopping experience including product catalog, user authentication, shopping cart, checkout process, order management, and admin dashboard.
@@ -10,8 +10,8 @@ A full-featured e-commerce platform inspired by Amazon. This project demonstrate
 
 ## Structure
 ```
-├── frontend/    → @frontend-react-hocclaude/CLAUDE.md
-├── backend/     → @backend-nest-hocclaude/CLAUDE.md
+├── frontend/    → @frontend-react-hoc_claude/CLAUDE.md
+├── backend/     → @backend-nest-hoc_claude/CLAUDE.md
 └── 01-share-docs/        → Shared documentation
 ```
 

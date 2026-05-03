@@ -1,10 +1,10 @@
 {
-    "name": "backend-nest-hocclaude",
+    "name": "backend-nest-hoc_claude",
     "version": "0.0.1",
     "description": "",
     "author": {
         "name": "Hỏi Dân IT vs Eric",
-        "url": "https://hocclaude.vn"
+        "url": "https://hoc_claude.vn"
     },
     "private": true,
     "scripts": {

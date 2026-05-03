@@ -1,4 +1,4 @@
-# Backend: hocclaude-ecommerce
+# Backend: hoc_claude-ecommerce
 
 ## Tech Stack
 - Language: TypeScript
