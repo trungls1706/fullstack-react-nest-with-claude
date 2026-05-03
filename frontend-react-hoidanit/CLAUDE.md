@@ -1,4 +1,4 @@
-# Frontend: hoidanit-ecommerce
+# Frontend: hocclaude-ecommerce
 
 ## Tech Stack
   - React 19 + Vite: fast dev server, modern React features

@@ -1,11 +1,11 @@
 {
-    "name": "frontend-react-hoidanit",
+    "name": "frontend-react-hocclaude",
     "private": true,
     "version": "0.0.0",
     "type": "module",
     "author": {
         "name": "Hỏi Dân IT vs Eric",
-        "url": "https://hoidanit.vn"
+        "url": "https://hocclaude.vn"
     },
     "scripts": {
         "dev": "vite",

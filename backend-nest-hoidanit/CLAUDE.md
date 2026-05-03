@@ -1,4 +1,4 @@
-# Backend: hoidanit-ecommerce
+# Backend: hocclaude-ecommerce
 
 ## Tech Stack
 - Language: TypeScript

@@ -279,7 +279,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_USERNAME=root
 DB_PASSWORD=secret
-DB_NAME=hoidanit_ecommerce
+DB_NAME=hocclaude_ecommerce
 
 # JWT
 JWT_SECRET=your-secret-key

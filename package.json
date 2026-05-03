@@ -1,0 +1,10 @@
+{
+  "name": "fullstack-react-nest-with-claude",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "deploy": "git add -A && git commit -m \"chore: auto deploy $(date +%Y-%m-%d_%H:%M:%S)\" && git push origin main",
+    "commit": "git add -A && git commit -m \"chore: update $(date +%Y-%m-%d_%H:%M:%S)\"",
+    "push": "git push origin main"
+  }
+}
