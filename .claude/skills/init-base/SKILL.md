@@ -30,8 +30,8 @@ This skill sets up:
 
 1. **Argument provided?** Must be `frontend` or `backend`
 2. **Target directory exists?**
-   - Backend: `backend-nest-hoidanit/`
-   - Frontend: `frontend-react-hoidanit/`
+   - Backend: `backend-nest/`
+   - Frontend: `frontend-react/`
 3. **Project already initialized?** Check for `package.json`
    - If not exists → Error: "Project not found. Create project first."
 
@@ -45,8 +45,8 @@ This skill sets up:
 |-----|---------|
 | `01-share-docs/DATABASE.md` | Database schema, entity definitions, naming conventions |
 | `01-share-docs/API_SPEC.md` | API endpoints, request/response formats |
-| `backend-nest-hoidanit/docs/BE-PROJECT-RULES.md` | Coding conventions, patterns, anti-patterns |
-| `backend-nest-hoidanit/docs/BE-ARCHITECTURE.md` | Folder structure, module organization |
+| `backend-nest/docs/BE-PROJECT-RULES.md` | Coding conventions, patterns, anti-patterns |
+| `backend-nest/docs/BE-ARCHITECTURE.md` | Folder structure, module organization |
 
 ### Workflow
 
@@ -132,8 +132,8 @@ npm install -D eslint prettier eslint-config-prettier
 | Doc | Purpose |
 |-----|---------|
 | `01-share-docs/API_SPEC.md` | API endpoints to consume |
-| `frontend-react-hoidanit/docs/FE-PROJECT-RULES.md` | Coding conventions, state management rules |
-| `frontend-react-hoidanit/docs/FE-ARCHITECTURE.md` | Folder structure, component organization |
+| `frontend-react/docs/FE-PROJECT-RULES.md` | Coding conventions, state management rules |
+| `frontend-react/docs/FE-ARCHITECTURE.md` | Folder structure, component organization |
 
 ### Workflow
 
@@ -233,7 +233,7 @@ After completion, provide:
 ```
 ✅ {Backend|Frontend} architecture setup complete!
 
-📁 Location: ./{backend-nest-hoidanit|frontend-react-hoidanit}/
+📁 Location: ./{backend-nest|frontend-react}/
 
 📦 Dependencies installed:
 - [list newly installed packages]

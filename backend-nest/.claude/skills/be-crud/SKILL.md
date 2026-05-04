@@ -34,8 +34,8 @@ allowed-tools:
 |-----|------------------|
 | `01-share-docs/DATABASE.md` | Entity schema, columns, relationships, naming conventions |
 | `01-share-docs/API_SPEC.md` | Endpoints, request/response format, error codes |
-| `backend-nest-hoidanit/docs/BE-PROJECT-RULES.md` | Coding patterns, anti-patterns, naming conventions |
-| `backend-nest-hoidanit/docs/BE-ARCHITECTURE.md` | Folder structure, file organization |
+| `backend-nest/docs/BE-PROJECT-RULES.md` | Coding patterns, anti-patterns, naming conventions |
+| `backend-nest/docs/BE-ARCHITECTURE.md` | Folder structure, file organization |
 
 ---
 

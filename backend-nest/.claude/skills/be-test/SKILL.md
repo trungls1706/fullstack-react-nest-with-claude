@@ -32,7 +32,7 @@ allowed-tools:
 
 | Doc | What to look for |
 |-----|------------------|
-| `backend-nest-hoidanit/docs/BE-PROJECT-RULES.md` | Testing patterns, coverage requirements |
+| `backend-nest/docs/BE-PROJECT-RULES.md` | Testing patterns, coverage requirements |
 | `src/features/{feature-name}/` | All files to understand what to test |
 
 ---

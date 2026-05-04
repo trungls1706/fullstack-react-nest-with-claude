@@ -69,7 +69,7 @@ export const Footer = () => {
                 <span className="text-sm text-gray-400">help@hoidanit.com</span>
               </li>
               <li>
-                <span className="text-sm text-gray-400">1-800-HOIDANIT</span>
+                <span className="text-sm text-gray-400">1-800</span>
               </li>
             </ul>
           </div>

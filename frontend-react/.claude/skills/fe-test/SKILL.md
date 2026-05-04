@@ -32,7 +32,7 @@ allowed-tools:
 
 | Doc | What to look for |
 |-----|------------------|
-| `frontend-react-hoidanit/docs/FE-PROJECT-RULES.md` | Testing patterns, what to test |
+| `frontend-react/docs/FE-PROJECT-RULES.md` | Testing patterns, what to test |
 | `src/features/{feature-name}/` | All files to understand what to test |
 
 ---

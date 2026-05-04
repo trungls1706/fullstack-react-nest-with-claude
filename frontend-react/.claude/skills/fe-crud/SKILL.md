@@ -33,8 +33,8 @@ allowed-tools:
 | Doc | What to look for |
 |-----|------------------|
 | `01-share-docs/API_SPEC.md` | Endpoints to call, request/response format |
-| `frontend-react-hoidanit/docs/FE-PROJECT-RULES.md` | Coding patterns, state management rules |
-| `frontend-react-hoidanit/docs/FE-ARCHITECTURE.md` | Folder structure, component organization |
+| `frontend-react/docs/FE-PROJECT-RULES.md` | Coding patterns, state management rules |
+| `frontend-react/docs/FE-ARCHITECTURE.md` | Folder structure, component organization |
 
 ---
 

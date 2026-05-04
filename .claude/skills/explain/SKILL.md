@@ -44,11 +44,11 @@ allowed-tools:
 ├── DATABASE.md
 └── API_SPEC.md
 
-backend-nest-hoidanit/docs/
+backend-nest/docs/
 ├── BE-PROJECT-RULES.md
 └── BE-ARCHITECTURE.md
 
-frontend-react-hoidanit/docs/
+frontend-react/docs/
 ├── FE-PROJECT-RULES.md
 └── FE-ARCHITECTURE.md
 
