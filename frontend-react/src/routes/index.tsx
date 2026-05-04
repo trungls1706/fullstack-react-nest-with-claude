@@ -7,6 +7,7 @@ import { ProtectedRoute } from './ProtectedRoute';
 import { AdminRoute } from './AdminRoute';
 import { ROUTES } from './routes';
 import { AdminUserListPage, AdminUserFormPage } from '@/features/user';
+import { LoginPage, RegisterPage, ProfilePage } from '@/features/auth';
 
 export const router = createBrowserRouter([
   {
@@ -17,8 +18,8 @@ export const router = createBrowserRouter([
   {
     element: <AuthLayout />,
     children: [
-      { path: ROUTES.LOGIN, element: <div>Login (TODO)</div> },
-      { path: ROUTES.REGISTER, element: <div>Register (TODO)</div> },
+      { path: ROUTES.LOGIN, element: <LoginPage /> },
+      { path: ROUTES.REGISTER, element: <RegisterPage /> },
     ],
   },
   {
@@ -30,7 +31,7 @@ export const router = createBrowserRouter([
           { path: ROUTES.CART, element: <div>Cart (TODO)</div> },
           { path: ROUTES.CHECKOUT, element: <div>Checkout (TODO)</div> },
           { path: ROUTES.ORDERS, element: <div>Orders (TODO)</div> },
-          { path: ROUTES.PROFILE, element: <div>Profile (TODO)</div> },
+          { path: ROUTES.PROFILE, element: <ProfilePage /> },
         ],
       },
     ],
