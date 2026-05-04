@@ -22,17 +22,11 @@ export class RoleRepository {
     return this.repo.findOne({ where: { name } });
   }
 
-  create(name: string): Promise<Role> {
-    return this.repo.save(this.repo.create({ name }));
+  save(role: Partial<Role>): Promise<Role> {
+    return this.repo.save(role);
   }
 
-  async update(id: number, name: string): Promise<Role | null> {
-    await this.repo.update(id, { name });
-    return this.findById(id);
-  }
-
-  async remove(id: number): Promise<boolean> {
-    const res = await this.repo.delete(id);
-    return (res.affected ?? 0) > 0;
+  async delete(id: number): Promise<void> {
+    await this.repo.delete(id);
   }
 }

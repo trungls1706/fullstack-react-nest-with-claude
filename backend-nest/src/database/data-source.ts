@@ -1,10 +1,7 @@
-import 'reflect-metadata';
-import { config as loadEnv } from 'dotenv';
+import * as dotenv from 'dotenv';
 import { DataSource } from 'typeorm';
-import { Role } from '../features/auth/entities/role.entity';
-import { User } from '../features/auth/entities/user.entity';
 
-loadEnv();
+dotenv.config();
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -12,8 +9,9 @@ export const AppDataSource = new DataSource({
   port: parseInt(process.env.DB_PORT ?? '3306', 10),
   username: process.env.DB_USERNAME ?? 'root',
   password: process.env.DB_PASSWORD ?? '',
-  database: process.env.DB_NAME ?? 'hoc_claude_ecommerce',
-  entities: [Role, User],
+  database: process.env.DB_NAME ?? 'hoidanit_ecommerce',
+  entities: [__dirname + '/../features/**/*.entity{.ts,.js}'],
   synchronize: false,
-  logging: process.env.DB_LOGGING === 'true',
+  logging: false,
+  charset: 'utf8mb4',
 });

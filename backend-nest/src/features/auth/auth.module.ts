@@ -3,19 +3,19 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuthController } from './auth.controller';
+import { AuthService } from './auth.service';
+import { RefreshToken } from './entities/refresh-token.entity';
 import { Role } from './entities/role.entity';
 import { User } from './entities/user.entity';
-import { RefreshToken } from './entities/refresh-token.entity';
+import { RefreshTokenRepository } from './repositories/refresh-token.repository';
 import { RoleRepository } from './repositories/role.repository';
 import { UserRepository } from './repositories/user.repository';
-import { RefreshTokenRepository } from './repositories/refresh-token.repository';
-import { RoleService } from './services/role.service';
-import { UserService } from './services/user.service';
-import { AuthService } from './services/auth.service';
-import { RoleController } from './controllers/role.controller';
-import { UserController } from './controllers/user.controller';
-import { AuthController } from './controllers/auth.controller';
+import { RolesController } from './roles.controller';
+import { RolesService } from './roles.service';
 import { JwtStrategy } from './strategies/jwt.strategy';
+import { UsersController } from './users.controller';
+import { UsersService } from './users.service';
 
 @Module({
   imports: [
@@ -25,23 +25,21 @@ import { JwtStrategy } from './strategies/jwt.strategy';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        secret: config.get<string>('jwt.secret') ?? 'change-me',
-        signOptions: {
-          expiresIn: (config.get<string>('jwt.expiresIn') ?? '15m') as unknown as number,
-        },
+        secret: config.get<string>('jwt.secret'),
+        signOptions: { expiresIn: config.get('jwt.expiresIn') as unknown as number },
       }),
     }),
   ],
-  controllers: [RoleController, UserController, AuthController],
+  controllers: [AuthController, RolesController, UsersController],
   providers: [
-    RoleRepository,
-    RoleService,
-    UserRepository,
-    UserService,
-    RefreshTokenRepository,
     AuthService,
+    RolesService,
+    RoleRepository,
+    UsersService,
+    UserRepository,
+    RefreshTokenRepository,
     JwtStrategy,
   ],
-  exports: [RoleService, UserService, AuthService, JwtStrategy, PassportModule],
+  exports: [AuthService, RolesService, RoleRepository, UsersService, UserRepository],
 })
 export class AuthModule {}

@@ -1,12 +1,29 @@
+import { useState } from 'react';
 import { Outlet } from 'react-router';
+import { AdminNavbar } from './AdminNavbar';
+import { AdminSidebar } from './AdminSidebar';
 
-export const AdminLayout = () => (
-  <div className="min-h-screen flex">
-    <aside className="w-60 border-r p-4">
-      <h2 className="font-semibold">Admin</h2>
-    </aside>
-    <main className="flex-1 p-6">
-      <Outlet />
-    </main>
-  </div>
-);
+export const AdminLayout = () => {
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+
+  return (
+    <div className="min-h-screen bg-gray-50 text-gray-900">
+      <AdminNavbar
+        isMenuCollapsed={isSidebarCollapsed}
+        toggleMenu={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+      />
+      <div className="pt-16">
+        <AdminSidebar isCollapsed={isSidebarCollapsed} />
+        <main
+          className={`min-h-[calc(100vh-4rem)] p-6 transition-all duration-300 ease-in-out ${
+            isSidebarCollapsed ? 'ml-16' : 'ml-64'
+          }`}
+        >
+          <div className="mx-auto max-w-7xl">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
+  );
+};

@@ -1,14 +1,29 @@
-import { PaginationMeta } from '../types/response.type';
+import { PaginatedResult } from '../types/pagination.type';
 
-export function buildPaginationMeta(
+export function paginate<T>(
+  data: T[],
+  total: number,
   page: number,
   limit: number,
-  total: number,
-): PaginationMeta {
+): PaginatedResult<T> {
   return {
-    page,
-    limit,
-    total,
-    totalPages: Math.max(1, Math.ceil(total / limit)),
+    data,
+    meta: {
+      page,
+      limit,
+      total,
+      totalPages: Math.ceil(total / limit),
+    },
+  };
+}
+
+export function getPaginationParams(page = 1, limit = 10) {
+  const safePage = Math.max(1, page);
+  const safeLimit = Math.min(100, Math.max(1, limit));
+  return {
+    skip: (safePage - 1) * safeLimit,
+    take: safeLimit,
+    page: safePage,
+    limit: safeLimit,
   };
 }

@@ -1,48 +1,53 @@
 import { Link, useNavigate } from 'react-router';
 import { ROUTES } from '@/routes/routes';
-import { RegisterForm, type RegisterFormValues } from '../components/RegisterForm';
-import { useLogin, useRegister } from '../hooks/useAuth';
-import { extractApiError } from '../utils/error.util';
+import { extractApiError } from '@/shared/utils/error';
+import { RegisterForm } from '../components/RegisterForm';
+import { useRegister } from '../hooks/useRegister';
 
 export const RegisterPage = () => {
   const navigate = useNavigate();
-  const registerMutation = useRegister();
-  const login = useLogin();
+  const { mutate, isPending, error } = useRegister();
 
-  const handleSubmit = (values: RegisterFormValues) => {
-    const payload = {
-      email: values.email,
-      password: values.password,
-      fullName: values.fullName,
-      phone: values.phone || undefined,
-    };
-    registerMutation.mutate(payload, {
+  const errorMessage = error ? extractApiError(error) : undefined;
+
+  const handleSubmit = (data: {
+    email: string;
+    password: string;
+    fullName: string;
+    phone?: string;
+  }) => {
+    mutate(data, {
       onSuccess: () => {
-        login.mutate(
-          { email: payload.email, password: payload.password },
-          { onSuccess: () => navigate(ROUTES.HOME, { replace: true }) },
-        );
+        void navigate(ROUTES.LOGIN);
       },
     });
   };
 
-  const submitting = registerMutation.isPending || login.isPending;
-  const error = registerMutation.isError
-    ? extractApiError(registerMutation.error, 'Registration failed')
-    : login.isError
-      ? extractApiError(login.error, 'Auto sign-in failed')
-      : null;
-
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1 className="text-2xl font-semibold">Create account</h1>
-      <RegisterForm submitting={submitting} errorMessage={error} onSubmit={handleSubmit} />
-      <p className="text-sm">
-        Already have an account?{' '}
-        <Link to={ROUTES.LOGIN} className="text-blue-600 underline">
-          Sign in
-        </Link>
-      </p>
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Create your account
+        </h2>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
+        <RegisterForm
+          onSubmit={handleSubmit}
+          isLoading={isPending}
+          error={errorMessage}
+        />
+
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Already have an account?{' '}
+          <Link
+            to={ROUTES.LOGIN}
+            className="font-semibold text-blue-600 hover:text-blue-500"
+          >
+            Sign in
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

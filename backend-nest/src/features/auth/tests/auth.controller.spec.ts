@@ -1,185 +1,179 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConfigService } from '@nestjs/config';
-import { UnauthorizedException } from '@nestjs/common';
-import type { Request, Response } from 'express';
-import { AuthController } from '../controllers/auth.controller';
-import { AuthService } from '../services/auth.service';
-import { Role } from '../entities/role.entity';
-import { User } from '../entities/user.entity';
+import { AuthController } from '../auth.controller';
+import { AuthService } from '../auth.service';
+
+const mockAuthService = () => ({
+  register: jest.fn(),
+  login: jest.fn(),
+  refresh: jest.fn(),
+  logout: jest.fn(),
+  me: jest.fn(),
+  updateProfile: jest.fn(),
+  changePassword: jest.fn(),
+});
+
+const mockUser = {
+  id: 1,
+  email: 'user@test.com',
+  fullName: 'Test User',
+  phone: null,
+  role: { id: 1, name: 'customer' },
+  isActive: true,
+  createdAt: new Date(),
+};
+
+const mockRequest = (cookies: Record<string, string> = {}) =>
+  ({
+    ip: '127.0.0.1',
+    headers: { 'user-agent': 'test-agent' },
+    cookies,
+  }) as never;
+
+const mockResponse = () => {
+  const res = {
+    cookie: jest.fn().mockReturnThis(),
+    clearCookie: jest.fn().mockReturnThis(),
+  };
+  return res as unknown as import('express').Response;
+};
 
 describe('AuthController', () => {
   let controller: AuthController;
-  let service: jest.Mocked<AuthService>;
-
-  const role: Role = { id: 1, name: 'customer' };
-  const user = {
-    id: 10,
-    email: 'a@b.com',
-    fullName: 'Tester',
-    phone: null,
-    isActive: true,
-    role,
-  } as User;
-
-  const tokens = {
-    accessToken: 'access.jwt',
-    refreshToken: 'refresh-token',
-    refreshExpiresAt: new Date(Date.now() + 60_000),
-  };
-
-  const mockRes = (): jest.Mocked<Response> => {
-    const res: Partial<Response> = {
-      cookie: jest.fn().mockReturnThis(),
-      clearCookie: jest.fn().mockReturnThis(),
-    };
-    return res as jest.Mocked<Response>;
-  };
+  let service: ReturnType<typeof mockAuthService>;
 
   beforeEach(async () => {
-    const serviceMock: Partial<jest.Mocked<AuthService>> = {
-      register: jest.fn(),
-      login: jest.fn(),
-      refresh: jest.fn(),
-      logout: jest.fn(),
-      me: jest.fn(),
-      updateMe: jest.fn(),
-      changePassword: jest.fn(),
-    };
-
-    const config = {
-      get: jest.fn((key: string) => (key === 'app.nodeEnv' ? 'test' : undefined)),
-    };
-
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
-      providers: [
-        { provide: AuthService, useValue: serviceMock },
-        { provide: ConfigService, useValue: config },
-      ],
+      providers: [{ provide: AuthService, useFactory: mockAuthService }],
     }).compile();
 
-    controller = module.get(AuthController);
+    controller = module.get<AuthController>(AuthController);
     service = module.get(AuthService);
   });
 
-  describe('POST /auth/register', () => {
-    it('returns user summary', async () => {
-      service.register.mockResolvedValue(user);
-      const res = await controller.register({
-        email: 'a@b.com',
+  // ─── register ───────────────────────────────────────────────────────────────
+
+  describe('register', () => {
+    it('should register and return user info', async () => {
+      service.register.mockResolvedValue(mockUser);
+
+      const result = await controller.register({
+        email: 'user@test.com',
         password: 'password123',
-        fullName: 'Tester',
+        fullName: 'Test User',
       });
-      expect(res.data).toEqual({
-        id: 10,
-        email: 'a@b.com',
-        fullName: 'Tester',
-        phone: null,
+
+      expect(service.register).toHaveBeenCalled();
+      expect(result).toEqual({
+        id: mockUser.id,
+        email: mockUser.email,
+        fullName: mockUser.fullName,
         role: 'customer',
       });
-      expect(res.message).toBe('Registration successful');
     });
   });
 
-  describe('POST /auth/login', () => {
-    it('returns access token and sets refresh cookie', async () => {
-      service.login.mockResolvedValue({ user, tokens });
-      const res = mockRes();
-      const req = { ip: '1.2.3.4', headers: { 'user-agent': 'jest' } } as unknown as Request;
+  // ─── login ──────────────────────────────────────────────────────────────────
+
+  describe('login', () => {
+    it('should login and set refresh token cookie', async () => {
+      service.login.mockResolvedValue({
+        accessToken: 'access_token',
+        refreshToken: 'refresh_token',
+        user: mockUser,
+      });
+      const res = mockResponse();
 
       const result = await controller.login(
-        { email: 'a@b.com', password: 'password123' },
-        req,
+        { email: 'user@test.com', password: 'password123' },
+        mockRequest(),
         res,
       );
 
-      expect(result.accessToken).toBe('access.jwt');
-      expect(result.user.email).toBe('a@b.com');
+      expect(service.login).toHaveBeenCalled();
       expect(res.cookie).toHaveBeenCalledWith(
         'refreshToken',
-        'refresh-token',
+        'refresh_token',
+        expect.objectContaining({ httpOnly: true }),
+      );
+      expect(result.accessToken).toBe('access_token');
+    });
+  });
+
+  // ─── refresh ────────────────────────────────────────────────────────────────
+
+  describe('refresh', () => {
+    it('should return new access token', async () => {
+      service.refresh.mockResolvedValue({ accessToken: 'new_token' });
+      const req = mockRequest({ refreshToken: 'raw_token' });
+
+      const result = await controller.refresh(req);
+
+      expect(service.refresh).toHaveBeenCalledWith('raw_token');
+      expect(result.accessToken).toBe('new_token');
+    });
+
+    it('should throw UnauthorizedException when no refresh cookie', async () => {
+      const req = mockRequest({});
+
+      await expect(controller.refresh(req)).rejects.toThrow();
+    });
+  });
+
+  // ─── logout ─────────────────────────────────────────────────────────────────
+
+  describe('logout', () => {
+    it('should logout and clear cookie', async () => {
+      service.logout.mockResolvedValue(undefined);
+      const res = mockResponse();
+
+      await controller.logout(mockRequest({ refreshToken: 'raw_token' }), res);
+
+      expect(service.logout).toHaveBeenCalledWith('raw_token');
+      expect(res.clearCookie).toHaveBeenCalledWith('refreshToken');
+    });
+
+    it('should clear cookie even without refresh token', async () => {
+      const res = mockResponse();
+
+      await controller.logout(mockRequest({}), res);
+
+      expect(service.logout).not.toHaveBeenCalled();
+      expect(res.clearCookie).toHaveBeenCalledWith('refreshToken');
+    });
+  });
+
+  // ─── me ─────────────────────────────────────────────────────────────────────
+
+  describe('me', () => {
+    it('should return current user info', () => {
+      const result = controller.me(mockUser as never);
+
+      expect(result).toEqual(
         expect.objectContaining({
-          httpOnly: true,
-          signed: true,
-          sameSite: 'lax',
+          id: mockUser.id,
+          email: mockUser.email,
+          fullName: mockUser.fullName,
         }),
       );
     });
   });
 
-  describe('POST /auth/refresh', () => {
-    it('reads cookie, returns new access token', async () => {
-      service.refresh.mockResolvedValue({ user, tokens });
-      const res = mockRes();
-      const req = {
-        signedCookies: { refreshToken: 'old-token' },
-        cookies: {},
-        ip: '1.2.3.4',
-        headers: {},
-      } as unknown as Request;
+  // ─── updateProfile ──────────────────────────────────────────────────────────
 
-      const result = await controller.refresh(req, res);
-
-      expect(service.refresh).toHaveBeenCalledWith('old-token', expect.any(Object));
-      expect(result.accessToken).toBe('access.jwt');
-      expect(res.cookie).toHaveBeenCalled();
-    });
-
-    it('throws when refresh cookie missing', async () => {
-      const res = mockRes();
-      const req = { signedCookies: {}, cookies: {}, headers: {} } as unknown as Request;
-      await expect(controller.refresh(req, res)).rejects.toBeInstanceOf(UnauthorizedException);
-      expect(service.refresh).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('POST /auth/logout', () => {
-    it('revokes refresh token and clears cookie', async () => {
-      const res = mockRes();
-      const req = {
-        signedCookies: { refreshToken: 'tok' },
-        cookies: {},
-        headers: {},
-      } as unknown as Request;
-
-      await controller.logout(req, res);
-
-      expect(service.logout).toHaveBeenCalledWith('tok');
-      expect(res.clearCookie).toHaveBeenCalledWith('refreshToken', expect.any(Object));
-    });
-  });
-
-  describe('GET /auth/me', () => {
-    it('returns current user summary', async () => {
-      service.me.mockResolvedValue(user);
-      const result = await controller.me({ id: 10, email: 'a@b.com', role: 'customer' });
-      expect(result.id).toBe(10);
-      expect(result.role).toBe('customer');
-    });
-  });
-
-  describe('PATCH /auth/me', () => {
-    it('delegates to service.updateMe', async () => {
-      service.updateMe.mockResolvedValue({ ...user, fullName: 'Updated' } as User);
-      const result = await controller.updateMe(
-        { id: 10, email: 'a@b.com', role: 'customer' },
-        { fullName: 'Updated' },
-      );
-      expect(service.updateMe).toHaveBeenCalledWith(10, { fullName: 'Updated' });
-      expect(result.fullName).toBe('Updated');
-    });
-  });
-
-  describe('PATCH /auth/change-password', () => {
-    it('delegates to service.changePassword', async () => {
-      await controller.changePassword(
-        { id: 10, email: 'a@b.com', role: 'customer' },
-        { currentPassword: 'old', newPassword: 'new-password' },
-      );
-      expect(service.changePassword).toHaveBeenCalledWith(10, {
-        currentPassword: 'old',
-        newPassword: 'new-password',
+  describe('updateProfile', () => {
+    it('should update and return profile', async () => {
+      service.updateProfile.mockResolvedValue({
+        ...mockUser,
+        fullName: 'Updated Name',
       });
+
+      const result = await controller.updateProfile(mockUser as never, {
+        fullName: 'Updated Name',
+      });
+
+      expect(service.updateProfile).toHaveBeenCalledWith(mockUser.id, { fullName: 'Updated Name' });
+      expect(result.fullName).toBe('Updated Name');
     });
   });
 });

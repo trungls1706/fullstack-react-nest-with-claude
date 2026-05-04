@@ -1,63 +1,96 @@
-import axios, { AxiosError, type InternalAxiosRequestConfig } from 'axios';
-import { ACCESS_TOKEN_KEY, API_BASE_URL } from '@/config/constants';
+import axios from 'axios';
+import { API_BASE_URL } from '@/config/constants';
 
 export const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
-  withCredentials: true,
-  headers: { 'Content-Type': 'application/json' },
+  withCredentials: true, // send httpOnly cookies (refresh token)
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-let accessToken: string | null = sessionStorage.getItem(ACCESS_TOKEN_KEY);
+// Request interceptor: attach access token
+axiosInstance.interceptors.request.use(
+  (config) => {
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
-export const setAccessToken = (token: string | null) => {
-  accessToken = token;
-  if (token) sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
-  else sessionStorage.removeItem(ACCESS_TOKEN_KEY);
-};
+// Response interceptor: handle 401 + auto-refresh
+let isRefreshing = false;
+let failedQueue: Array<{
+  resolve: (value: unknown) => void;
+  reject: (reason?: unknown) => void;
+}> = [];
 
-export const getAccessToken = () => accessToken;
-
-axiosInstance.interceptors.request.use((config: InternalAxiosRequestConfig) => {
-  if (accessToken) {
-    config.headers.Authorization = `Bearer ${accessToken}`;
-  }
-  return config;
-});
-
-let refreshPromise: Promise<string> | null = null;
-
-const refreshAccessToken = async (): Promise<string> => {
-  const res = await axios.post<{ data: { accessToken: string } }>(
-    `${API_BASE_URL}/auth/refresh`,
-    {},
-    { withCredentials: true },
-  );
-  const newToken = res.data.data.accessToken;
-  setAccessToken(newToken);
-  return newToken;
+const processQueue = (error: unknown, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
 };
 
 axiosInstance.interceptors.response.use(
   (response) => response,
-  async (error: AxiosError) => {
-    const original = error.config as
-      | (InternalAxiosRequestConfig & { _retry?: boolean })
-      | undefined;
+  async (error) => {
+    const originalRequest = error.config;
 
-    if (error.response?.status === 401 && original && !original._retry) {
-      original._retry = true;
+    if (
+      error.response?.status === 401 &&
+      !originalRequest._retry &&
+      originalRequest.url !== '/auth/refresh'
+    ) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosInstance(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
       try {
-        refreshPromise = refreshPromise ?? refreshAccessToken();
-        const token = await refreshPromise;
-        refreshPromise = null;
-        original.headers.Authorization = `Bearer ${token}`;
-        return axiosInstance(original);
-      } catch (refreshErr) {
-        refreshPromise = null;
-        setAccessToken(null);
-        return Promise.reject(refreshErr);
+        const response = await axiosInstance.post<{ data: { accessToken: string } }>(
+          '/auth/refresh',
+        );
+        const newToken = response.data.data.accessToken;
+        setAccessToken(newToken);
+        processQueue(null, newToken);
+        originalRequest.headers.Authorization = `Bearer ${newToken}`;
+        return axiosInstance(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+        clearAccessToken();
+        window.location.href = '/login';
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
       }
     }
+
     return Promise.reject(error);
   },
 );
+
+// In-memory token storage (NOT localStorage — security best practice)
+let accessToken: string | null = null;
+
+export const getAccessToken = () => accessToken;
+export const setAccessToken = (token: string) => { accessToken = token; };
+export const clearAccessToken = () => { accessToken = null; };
+
+export default axiosInstance;

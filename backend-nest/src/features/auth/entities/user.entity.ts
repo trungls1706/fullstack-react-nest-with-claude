@@ -11,22 +11,22 @@ import {
 import { Role } from './role.entity';
 
 @Entity('users')
+@Index('idx_users_email', ['email'])
 export class User {
   @PrimaryGeneratedColumn({ type: 'bigint' })
   id: number;
 
-  @Column({ name: 'role_id', type: 'bigint' })
-  roleId: number;
-
-  @ManyToOne(() => Role, { eager: true })
+  @ManyToOne(() => Role, { eager: false })
   @JoinColumn({ name: 'role_id' })
   role: Role;
 
-  @Index('idx_users_email', { unique: true })
+  @Column({ name: 'role_id', type: 'bigint' })
+  roleId: number;
+
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ name: 'password_hash', type: 'varchar', length: 255, select: false })
+  @Column({ name: 'password_hash', type: 'varchar', length: 255 })
   passwordHash: string;
 
   @Column({ name: 'full_name', type: 'varchar', length: 100 })

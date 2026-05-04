@@ -1,8 +1,8 @@
-import { IsOptional, IsString, Length } from 'class-validator';
+import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
 
 export class UpdateRoleDto {
-  @IsOptional()
   @IsString()
-  @Length(2, 50)
-  name?: string;
+  @IsNotEmpty()
+  @MaxLength(50)
+  name: string;
 }

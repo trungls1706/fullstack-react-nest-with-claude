@@ -1,64 +1,74 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
+import type { LoginPayload } from '../types/auth.types';
 
 const schema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string().min(1, 'Password is required'),
 });
 
-export type LoginFormValues = z.infer<typeof schema>;
+type FormValues = z.infer<typeof schema>;
 
 interface Props {
-  submitting?: boolean;
-  errorMessage?: string | null;
-  onSubmit: (values: LoginFormValues) => void;
+  onSubmit: (data: LoginPayload) => void;
+  isLoading?: boolean;
+  error?: string;
 }
 
-export const LoginForm = ({ submitting, errorMessage, onSubmit }: Props) => {
+export const LoginForm = ({ onSubmit, isLoading, error }: Props) => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(schema),
-    defaultValues: { email: '', password: '' },
-  });
+  } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3 w-full max-w-sm" aria-label="login-form">
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div>
-        <label className="block text-sm" htmlFor="login-email">Email</label>
+        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+          Email
+        </label>
         <input
-          id="login-email"
+          id="email"
           type="email"
           autoComplete="email"
-          className="border rounded px-3 py-2 w-full"
           {...register('email')}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="you@example.com"
         />
-        {errors.email && <p className="text-red-600 text-sm">{errors.email.message}</p>}
+        {errors.email && (
+          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+        )}
       </div>
 
       <div>
-        <label className="block text-sm" htmlFor="login-password">Password</label>
+        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          Password
+        </label>
         <input
-          id="login-password"
+          id="password"
           type="password"
           autoComplete="current-password"
-          className="border rounded px-3 py-2 w-full"
           {...register('password')}
+          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+          placeholder="••••••••"
         />
-        {errors.password && <p className="text-red-600 text-sm">{errors.password.message}</p>}
+        {errors.password && (
+          <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>
+        )}
       </div>
 
-      {errorMessage && <p className="text-red-600 text-sm" role="alert">{errorMessage}</p>}
+      {error && (
+        <p className="text-sm text-red-600 bg-red-50 px-3 py-2 rounded-md">{error}</p>
+      )}
 
       <button
         type="submit"
-        disabled={submitting}
-        className="w-full px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50"
+        disabled={isLoading}
+        className="w-full rounded-md bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
       >
-        {submitting ? 'Signing in…' : 'Sign in'}
+        {isLoading ? 'Signing in...' : 'Sign in'}
       </button>
     </form>
   );

@@ -1,33 +1,48 @@
 import { Link, useNavigate } from 'react-router';
 import { ROUTES } from '@/routes/routes';
-import { LoginForm, type LoginFormValues } from '../components/LoginForm';
-import { useLogin } from '../hooks/useAuth';
-import { extractApiError } from '../utils/error.util';
+import { extractApiError } from '@/shared/utils/error';
+import { LoginForm } from '../components/LoginForm';
+import { useLogin } from '../hooks/useLogin';
 
 export const LoginPage = () => {
   const navigate = useNavigate();
-  const login = useLogin();
+  const { mutate, isPending, error } = useLogin();
 
-  const handleSubmit = (values: LoginFormValues) => {
-    login.mutate(values, {
-      onSuccess: () => navigate(ROUTES.HOME, { replace: true }),
+  const errorMessage = error ? extractApiError(error) : undefined;
+
+  const handleSubmit = (data: { email: string; password: string }) => {
+    mutate(data, {
+      onSuccess: () => {
+        void navigate(ROUTES.HOME);
+      },
     });
   };
 
   return (
-    <div className="flex flex-col items-center gap-4">
-      <h1 className="text-2xl font-semibold">Sign in</h1>
-      <LoginForm
-        submitting={login.isPending}
-        errorMessage={login.isError ? extractApiError(login.error, 'Login failed') : null}
-        onSubmit={handleSubmit}
-      />
-      <p className="text-sm">
-        No account?{' '}
-        <Link to={ROUTES.REGISTER} className="text-blue-600 underline">
-          Create one
-        </Link>
-      </p>
+    <div className="flex min-h-full flex-col justify-center px-6 py-12 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-sm">
+        <h2 className="mt-6 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          Sign in to your account
+        </h2>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
+        <LoginForm
+          onSubmit={handleSubmit}
+          isLoading={isPending}
+          error={errorMessage}
+        />
+
+        <p className="mt-6 text-center text-sm text-gray-500">
+          Don't have an account?{' '}
+          <Link
+            to={ROUTES.REGISTER}
+            className="font-semibold text-blue-600 hover:text-blue-500"
+          >
+            Register
+          </Link>
+        </p>
+      </div>
     </div>
   );
 };

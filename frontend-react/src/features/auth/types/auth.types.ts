@@ -4,6 +4,8 @@ export interface AuthUser {
   fullName: string;
   phone: string | null;
   role: string;
+  isActive: boolean;
+  createdAt: string;
 }
 
 export interface LoginPayload {
@@ -18,7 +20,7 @@ export interface RegisterPayload {
   phone?: string;
 }
 
-export interface UpdateMePayload {
+export interface UpdateProfilePayload {
   fullName?: string;
   phone?: string;
 }
@@ -30,5 +32,16 @@ export interface ChangePasswordPayload {
 
 export interface LoginResponse {
   accessToken: string;
-  user: AuthUser;
+  user: Pick<AuthUser, 'id' | 'email' | 'fullName' | 'role'>;
+}
+
+export interface RegisterResponse {
+  id: number;
+  email: string;
+  fullName: string;
+  role: string;
+}
+
+export interface RefreshResponse {
+  accessToken: string;
 }

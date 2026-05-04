@@ -1,12 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeepPartial, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
-export interface ListUsersFilter {
+export interface FindAllUsersOptions {
   page: number;
   limit: number;
-  search?: string;
   isActive?: boolean;
 }
 
@@ -17,55 +16,38 @@ export class UserRepository {
     private readonly repo: Repository<User>,
   ) {}
 
-  async list(filter: ListUsersFilter): Promise<[User[], number]> {
+  async findAllPaginated(
+    options: FindAllUsersOptions,
+  ): Promise<[User[], number]> {
+    const { page, limit, isActive } = options;
+
     const qb = this.repo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.role', 'role')
-      .orderBy('user.id', 'DESC')
-      .skip((filter.page - 1) * filter.limit)
-      .take(filter.limit);
+      .orderBy('user.id', 'ASC')
+      .skip((page - 1) * limit)
+      .take(limit);
 
-    if (filter.search) {
-      qb.andWhere(
-        '(user.email LIKE :s OR user.full_name LIKE :s)',
-        { s: `%${filter.search}%` },
-      );
-    }
-    if (typeof filter.isActive === 'boolean') {
-      qb.andWhere('user.is_active = :active', { active: filter.isActive });
+    if (isActive !== undefined) {
+      qb.andWhere('user.isActive = :isActive', { isActive });
     }
 
     return qb.getManyAndCount();
   }
 
   findById(id: number): Promise<User | null> {
-    return this.repo.findOne({ where: { id } });
+    return this.repo.findOne({ where: { id }, relations: ['role'] });
   }
 
   findByEmail(email: string): Promise<User | null> {
-    return this.repo
-      .createQueryBuilder('user')
-      .addSelect('user.passwordHash')
-      .leftJoinAndSelect('user.role', 'role')
-      .where('user.email = :email', { email })
-      .getOne();
+    return this.repo.findOne({ where: { email } });
   }
 
-  emailExists(email: string): Promise<boolean> {
-    return this.repo.exists({ where: { email } });
+  save(user: Partial<User>): Promise<User> {
+    return this.repo.save(user);
   }
 
-  create(data: DeepPartial<User>): Promise<User> {
-    return this.repo.save(this.repo.create(data));
-  }
-
-  async update(id: number, data: DeepPartial<User>): Promise<User | null> {
-    await this.repo.update(id, data as object);
-    return this.findById(id);
-  }
-
-  async remove(id: number): Promise<boolean> {
-    const res = await this.repo.delete(id);
-    return (res.affected ?? 0) > 0;
+  async delete(id: number): Promise<void> {
+    await this.repo.delete(id);
   }
 }

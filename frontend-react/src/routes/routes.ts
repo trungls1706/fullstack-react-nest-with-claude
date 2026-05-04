@@ -10,7 +10,21 @@ export const ROUTES = {
   ORDERS: '/orders',
   ORDER_DETAIL: '/orders/:id',
   PROFILE: '/profile',
+  ADMIN: '/admin',
   ADMIN_PRODUCTS: '/admin/products',
+  ADMIN_PRODUCT_CREATE: '/admin/products/create',
+  ADMIN_PRODUCT_EDIT: '/admin/products/:id/edit',
+  ADMIN_PRODUCT_VARIANTS: '/admin/products/:id/variants',
+  ADMIN_CATEGORIES: '/admin/categories',
+  ADMIN_CATEGORY_CREATE: '/admin/categories/create',
+  ADMIN_CATEGORY_EDIT: '/admin/categories/:id/edit',
   ADMIN_ORDERS: '/admin/orders',
+  ADMIN_ROLES: '/admin/roles',
+  ADMIN_ROLE_CREATE: '/admin/roles/create',
+  ADMIN_ROLE_EDIT: '/admin/roles/:id/edit',
   ADMIN_USERS: '/admin/users',
+  ADMIN_USER_CREATE: '/admin/users/create',
+  ADMIN_USER_EDIT: '/admin/users/:id/edit',
 } as const;
+
+export type RoutePath = (typeof ROUTES)[keyof typeof ROUTES];

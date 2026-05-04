@@ -1,26 +1,31 @@
+// Types
 export type {
   AuthUser,
   LoginPayload,
   RegisterPayload,
-  UpdateMePayload,
+  UpdateProfilePayload,
   ChangePasswordPayload,
   LoginResponse,
+  RegisterResponse,
 } from './types/auth.types';
+export type { Role, CreateRolePayload, UpdateRolePayload } from './types/role.types';
+
+// Services
 export { authService } from './services/auth.service';
+export { roleService } from './services/role.service';
+
+// Store
 export { useAuthStore } from './stores/auth.store';
-export {
-  useMe,
-  useLogin,
-  useRegister,
-  useLogout,
-  useUpdateMe,
-  useChangePassword,
-} from './hooks/useAuth';
-export { LoginForm } from './components/LoginForm';
-export { RegisterForm } from './components/RegisterForm';
-export { ProfileForm } from './components/ProfileForm';
-export { ChangePasswordForm } from './components/ChangePasswordForm';
-export { LoginPage } from './pages/LoginPage';
-export { RegisterPage } from './pages/RegisterPage';
-export { ProfilePage } from './pages/ProfilePage';
-export { extractApiError } from './utils/error.util';
+
+// Auth hooks
+export { useLogin } from './hooks/useLogin';
+export { useRegister } from './hooks/useRegister';
+export { useLogout } from './hooks/useLogout';
+export { useMe } from './hooks/useMe';
+
+// Role hooks
+export { useRoles } from './hooks/useRoles';
+export { useRole } from './hooks/useRole';
+export { useCreateRole } from './hooks/useCreateRole';
+export { useUpdateRole } from './hooks/useUpdateRole';
+export { useDeleteRole } from './hooks/useDeleteRole';

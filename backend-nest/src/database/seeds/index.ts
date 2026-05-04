@@ -1,1 +1,10 @@
-export { seedRoles } from './role.seed';
+export { seedRole } from './role.seed';
+export { seedUser } from './user.seed';
+export { seedCategory } from './category.seed';
+export { seedProduct } from './product.seed';
+export { seedProductVariant } from './product-variant.seed';
+export { seedProductImage } from './product-image.seed';
+export { seedAddress } from './address.seed';
+export { seedOrder } from './order.seed';
+export { seedReview } from './review.seed';
+export { seedCart } from './cart.seed';

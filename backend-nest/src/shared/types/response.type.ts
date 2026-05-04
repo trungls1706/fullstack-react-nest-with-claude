@@ -1,17 +1,8 @@
-export interface ApiSuccessResponse<T> {
-  success: true;
-  data: T;
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
   message?: string;
   meta?: PaginationMeta;
-}
-
-export interface ApiErrorResponse {
-  success: false;
-  error: {
-    code: string;
-    message: string;
-    details?: Record<string, unknown>;
-  };
 }
 
 export interface PaginationMeta {

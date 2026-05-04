@@ -3,9 +3,3 @@ export interface JwtPayload {
   email: string;
   role: string;
 }
-
-export interface AuthenticatedUser {
-  id: number;
-  email: string;
-  role: string;
-}

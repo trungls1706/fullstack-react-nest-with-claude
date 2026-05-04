@@ -1,38 +1,35 @@
-import { axiosInstance } from '@/shared/lib/axios';
+import axiosInstance from '@/shared/lib/axios';
 import type { ApiResponse } from '@/shared/types/api.types';
 import type {
   AuthUser,
   ChangePasswordPayload,
   LoginPayload,
   LoginResponse,
+  RefreshResponse,
   RegisterPayload,
-  UpdateMePayload,
+  RegisterResponse,
+  UpdateProfilePayload,
 } from '../types/auth.types';
 
 export const authService = {
-  register: (payload: RegisterPayload) =>
-    axiosInstance
-      .post<ApiResponse<AuthUser>>('/auth/register', payload)
-      .then((r) => r.data),
+  register: (data: RegisterPayload) =>
+    axiosInstance.post<ApiResponse<RegisterResponse>>('/auth/register', data),
 
-  login: (payload: LoginPayload) =>
-    axiosInstance
-      .post<ApiResponse<LoginResponse>>('/auth/login', payload)
-      .then((r) => r.data),
+  login: (data: LoginPayload) =>
+    axiosInstance.post<ApiResponse<LoginResponse>>('/auth/login', data),
+
+  refresh: () =>
+    axiosInstance.post<ApiResponse<RefreshResponse>>('/auth/refresh'),
 
   logout: () =>
-    axiosInstance.post<void>('/auth/logout').then(() => undefined),
+    axiosInstance.post<void>('/auth/logout'),
 
   me: () =>
-    axiosInstance.get<ApiResponse<AuthUser>>('/auth/me').then((r) => r.data),
+    axiosInstance.get<ApiResponse<AuthUser>>('/auth/me'),
 
-  updateMe: (payload: UpdateMePayload) =>
-    axiosInstance
-      .patch<ApiResponse<AuthUser>>('/auth/me', payload)
-      .then((r) => r.data),
+  updateProfile: (data: UpdateProfilePayload) =>
+    axiosInstance.patch<ApiResponse<Partial<AuthUser>>>('/auth/me', data),
 
-  changePassword: (payload: ChangePasswordPayload) =>
-    axiosInstance
-      .patch<void>('/auth/change-password', payload)
-      .then(() => undefined),
+  changePassword: (data: ChangePasswordPayload) =>
+    axiosInstance.patch<void>('/auth/change-password', data),
 };
